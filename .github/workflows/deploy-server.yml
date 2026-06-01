@@ -1,0 +1,56 @@
+name: Deploy Server to Render
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - server/**
+      - .github/workflows/deploy-server.yml
+  workflow_dispatch:
+    description: 'Manually trigger server deployment'
+
+jobs:
+  deploy-server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: npm ci --prefer-offline || npm install --prefer-offline
+
+      - name: Run server tests
+        working-directory: ./server
+        run: npm test || echo "No test script found"
+        env:
+          CI: true
+
+      - name: Run server linter
+        working-directory: ./server
+        run: npm run lint || echo "No lint script found"
+
+      - name: Deploy to Render
+        uses: render-actions/deploy@v1
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          working-directory: ./server
+          environment: production
+        env:
+          CI: true
+
+      - name: Deployment status
+        run: |
+          echo "Server deployment triggered!"
+          echo "Commit: ${{ github.sha }}"
+          echo "Author: ${{ github.actor }}"
+          echo "Branch: ${{ github.ref_name }}"

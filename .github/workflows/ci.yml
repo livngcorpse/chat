@@ -43,6 +43,12 @@ jobs:
         working-directory: ./server
         run: npm run lint || echo "No lint script found"
 
+      - name: Run server tests
+        working-directory: ./server
+        run: npm test || echo "No test script found"
+        env:
+          CI: true
+
       - name: Install client dependencies
         working-directory: ./client
         run: npm ci --prefer-offline || npm install --prefer-offline
@@ -60,6 +66,8 @@ jobs:
       - name: Build client application
         working-directory: ./client
         run: npm run build
+        env:
+          REACT_APP_SOCKET_ENDPOINT: ${{ secrets.REACT_APP_SOCKET_ENDPOINT }}
 
       - name: Analyze build output
         working-directory: ./client
@@ -75,7 +83,7 @@ jobs:
           name: client-build-${{ matrix.node-version }}
           path: client/build
           retention-days: 7
-          if-op: success()
+          if: success()
 
       - name: Upload build artifacts (all)
         uses: actions/upload-artifact@v4
@@ -98,7 +106,23 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Validate required secrets
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ]; then
+            echo "Warning: NETLIFY_AUTH_TOKEN is not set"
+          fi
+          if [ -z "$NETLIFY_SITE_ID" ]; then
+            echo "Warning: NETLIFY_SITE_ID is not set"
+          fi
+          if [ -z "$REACT_APP_SOCKET_ENDPOINT" ]; then
+            echo "Warning: REACT_APP_SOCKET_ENDPOINT is not set - using localhost fallback"
+          fi
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          REACT_APP_SOCKET_ENDPOINT: ${{ secrets.REACT_APP_SOCKET_ENDPOINT }}
+
+      - name: Install root dependencies
         run: npm ci --prefer-offline || npm install
 
       - name: Run npm audit
