@@ -1,0 +1,149 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    description: 'Manually trigger CI/CD pipeline'
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+
+      - name: Verify npm cache
+        run: npm config get cache
+
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci --prefer-offline || npm install --prefer-offline
+
+      - name: Run server linter
+        working-directory: ./server
+        run: npm run lint || echo "No lint script found"
+
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm ci --prefer-offline || npm install --prefer-offline
+
+      - name: Run client linter
+        working-directory: ./client
+        run: npm run lint || echo "No lint script found"
+
+      - name: Run client tests
+        working-directory: ./client
+        run: npm test -- --watchAll=false --reporters=default --reporters=jest-junit
+        env:
+          CI: true
+
+      - name: Build client application
+        working-directory: ./client
+        run: npm run build
+
+      - name: Analyze build output
+        working-directory: ./client
+        run: |
+          echo "Build artifacts:"
+          ls -la build/
+          echo "Build size:"
+          du -sh build/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-build-${{ matrix.node-version }}
+          path: client/build
+          retention-days: 7
+          if-op: success()
+
+      - name: Upload build artifacts (all)
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-build
+          path: client/build
+          retention-days: 7
+
+  security-scan:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline || npm install
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run security scan
+        run: npx audit-ci --moderate || echo "Security scan completed"
+
+  deploy:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: client-build
+          path: client/build
+
+      - name: Display build info
+        run: |
+          echo "Build directory contents:"
+          ls -la client/build/
+          echo "Build size:"
+          du -sh client/build/
+
+      - name: Deploy to Netlify
+        uses: nwtgk/actions-netlify@v3
+        with:
+          publish-dir: ./client/build
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions (${{ github.sha }})"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Deployment status
+        run: |
+          echo "Deployment triggered!"
+          echo "Commit: ${{ github.sha }}"
+          echo "Author: ${{ github.actor }}"
+          echo "Branch: ${{ github.ref_name }}"

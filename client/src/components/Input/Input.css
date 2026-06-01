@@ -1,27 +1,122 @@
 .form {
   display: flex;
-  border-top: 2px solid #D3D3D3;
+  border-top: 1px solid #e0e0e0;
+  padding: 15px;
+  background: #fff;
+  align-items: center;
+}
+
+.inputWrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .input {
-  border: none;
-  border-radius: 0;
-  padding: 5%;
-  width: 80%;
-  font-size: 1.2em;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  padding: 12px 20px;
+  width: 100%;
+  font-size: 1.1em;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  resize: none;
+  height: 50px;
+  padding-right: 45px;
 }
 
-input:focus, textarea:focus, select:focus{
-  outline: none;
+.input:focus {
+  border-color: #2979FF;
+  box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.1);
+}
+
+.inputFocused {
+  border-color: #2979FF;
+  box-shadow: 0 0 0 3px rgba(41, 121, 255, 0.1);
+}
+
+.clearButton {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s;
+}
+
+.clearButton:hover {
+  color: #333;
 }
 
 .sendButton {
   color: #fff !important;
   text-transform: uppercase;
   text-decoration: none;
-  background: #2979FF;
-  padding: 20px;
+  background: linear-gradient(135deg, #2979FF 0%, #1565C0 100%);
+  padding: 12px 25px;
   display: inline-block;
   border: none;
-  width: 20%;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+  margin-left: 10px;
+  font-weight: 600;
+  font-size: 0.95em;
+  min-width: 80px;
+}
+
+.sendButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(41, 121, 255, 0.3);
+}
+
+.sendButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.sendButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.sendButton.sending {
+  background: linear-gradient(135deg, #1976D2 0%, #0D47A1 100%);
+}
+
+/* Mobile improvements */
+@media (max-width: 600px) {
+  .form {
+    padding: 10px;
+  }
+
+  .input {
+    font-size: 1em;
+    height: 45px;
+  }
+
+  .sendButton {
+    padding: 10px 20px;
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 400px) {
+  .form {
+    flex-direction: column;
+  }
+
+  .inputWrapper {
+    margin-bottom: 10px;
+  }
+
+  .sendButton {
+    width: 100%;
+    margin-left: 0;
+  }
 }

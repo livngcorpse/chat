@@ -2,4 +2,104 @@
   padding: 5% 0;
   overflow: auto;
   flex: auto;
+  background: #f9f9f9;
+}
+
+.messagesContent {
+  padding: 0 20px;
+}
+
+/* Search Bar Styles */
+.messagesContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.messagesSearchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.messagesCount {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.searchToggle {
+  background: #2979FF;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  transition: background 0.2s;
+}
+
+.searchToggle:hover {
+  background: #1565C0;
+}
+
+.messagesSearch {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fff;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  font-size: 0.9em;
+}
+
+.searchInput:focus {
+  border-color: #2979FF;
+}
+
+.clearSearch {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.2em;
+  cursor: pointer;
+  margin-left: 8px;
+  padding: 0 5px;
+}
+
+.clearSearch:hover {
+  color: #333;
+}
+
+.noMessages {
+  text-align: center;
+  color: #888;
+  padding: 40px 20px;
+  font-style: italic;
+}
+
+/* Scrollbar */
+.messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

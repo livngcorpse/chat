@@ -1,17 +1,44 @@
 .messageBox {
   background: #F3F3F3;
   border-radius: 20px;
-  padding: 5px 20px;
-  color: white;
+  padding: 10px 20px;
+  color: #353535;
   display: inline-block;
   max-width: 80%;
+  position: relative;
+  word-wrap: break-word;
+}
+
+.messageBox::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 10px solid #F3F3F3;
+}
+
+.messageContent {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  max-width: 80%;
+}
+
+.messageContentBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .messageText {
   width: 100%;
   letter-spacing: 0;
   float: left;
-  font-size: 1.1em;
+  font-size: 1em;
   word-wrap: break-word;
 }
 
@@ -22,16 +49,39 @@
 .messageContainer {
   display: flex;
   justify-content: flex-end;
-  padding: 0 5%;
+  padding: 8px 5%;
   margin-top: 3px;
+}
+
+.messageContainer.justifyStart {
+  justify-content: flex-start;
+}
+
+.messageContainer.justifyEnd {
+  justify-content: flex-end;
+}
+
+.messageContainer.justifyStart .messageBox::before {
+  left: auto;
+  right: -10px;
+  border-right: none;
+  border-left: 10px solid #F3F3F3;
 }
 
 .sentText {
   display: flex;
   align-items: center;
-  font-family: Helvetica;
+  font-family: Helvetica, Arial, sans-serif;
   color: #828282;
   letter-spacing: 0.3px;
+  font-size: 0.75em;
+  margin-bottom: 4px;
+}
+
+.timestamp {
+  margin-left: 8px;
+  font-size: 0.7em;
+  opacity: 0.7;
 }
 
 .pl-10 {
@@ -40,14 +90,6 @@
 
 .pr-10 {
   padding-right: 10px;
-}
-
-.justifyStart {
-  justify-content: flex-start;
-}
-
-.justifyEnd {
-  justify-content: flex-end;
 }
 
 .colorWhite {
@@ -59,9 +101,42 @@
 }
 
 .backgroundBlue {
-  background: #2979FF;
+  background: linear-gradient(135deg, #2979FF 0%, #1565C0 100%);
+  box-shadow: 0 2px 4px rgba(41, 121, 255, 0.2);
 }
 
 .backgroundLight {
-  background: #F3F3F3;
+  background: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Avatar Styles */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9em;
+  margin-right: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.messageContainer.justifyStart .avatar {
+  order: -1;
+}
+
+.messageContainer.justifyEnd .avatar {
+  display: none;
+}
+
+/* Message group styling */
+.messageGroup {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
 }

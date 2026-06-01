@@ -1,17 +1,29 @@
 {
   "name": "server",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.2.0",
+  "description": "Realtime Chat Application Server",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "lint": "eslint *.js",
+    "format": "eslint --fix *.js"
   },
-  "keywords": [],
+  "keywords": [
+    "chat",
+    "realtime",
+    "socket.io",
+    "express"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "socket.io": "^2.2.0"
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "eslint": "^9.29.0",
+    "eslint-config-standard": "^17.1.0"
   }
 }

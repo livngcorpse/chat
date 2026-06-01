@@ -2,10 +2,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #2979FF;
+  background: linear-gradient(135deg, #2979FF 0%, #1565C0 100%);
   border-radius: 4px 4px 0 0;
-  height: 60px;
+  height: 70px;
   width: 100%;
+  padding: 0 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
 .leftInnerContainer {
@@ -23,6 +25,98 @@
   margin-right: 5%;
 }
 
+.roomInfo {
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+}
+
+.roomInfo h3 {
+  margin: 0;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.currentUser {
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
 .onlineIcon {
-  margin-right: 5%;
+  width: 24px;
+  height: 24px;
+}
+
+.leaveButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 15px;
+  transition: background 0.3s, transform 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.leaveButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.leaveButton:active {
+  transform: translateY(0);
+}
+
+.homeLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 0.3s;
+}
+
+.homeLink:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.homeLink img {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .infoBar {
+    padding: 0 12px;
+    height: 60px;
+  }
+
+  .roomInfo h3 {
+    font-size: 1em;
+  }
+
+  .currentUser {
+    font-size: 0.75em;
+  }
+
+  .onlineIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .leaveButton {
+    padding: 6px 15px;
+    font-size: 13px;
+  }
+
+  .homeLink {
+    width: 32px;
+    height: 32px;
+  }
 }

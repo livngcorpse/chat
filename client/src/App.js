@@ -1,17 +1,39 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import Chat from './components/Chat/Chat';
 import Join from './components/Join/Join';
 
-import { BrowserRouter as Router, Route } from "react-router-dom";
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const name = searchParams.get('name');
+  const room = searchParams.get('room');
+
+  if (!name || !room) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
 
 const App = () => {
   return (
     <Router>
-      <Route path="/" exact component={Join} />
-      <Route path="/chat" component={Chat} />
+      <Routes>
+        <Route path="/" element={<Join />} />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </Router>
   );
-}
+};
 
 export default App;

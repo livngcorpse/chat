@@ -5,29 +5,190 @@
   color: white;
   height: 60%;
   justify-content: space-between;
+  padding: 20px;
+  background: linear-gradient(135deg, #1A1A1D 0%, #2d3436 100%);
 }
 
-.activeContainer {
+.appDescription {
+  font-size: 1em;
+  opacity: 0.85;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.featuresList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.feature {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.85em;
   display: flex;
   align-items: center;
-  margin-bottom: 50%;
+}
+
+.feature::before {
+  content: '✨';
+  margin-right: 8px;
+}
+
+/* Users List */
+.usersList {
+  margin-top: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.usersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.usersHeader h3 {
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.userCountBadge {
+  background: rgba(41, 121, 255, 0.3);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8em;
+}
+
+.usersList ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .activeItem {
   display: flex;
   align-items: center;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: background 0.2s;
 }
 
-.activeContainer img {
-  padding-left: 10px;
+.activeItem:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.textContainer h1 {
-  margin-bottom: 0px;
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85em;
+  margin-right: 12px;
+  flex-shrink: 0;
 }
 
+.userName {
+  flex: 1;
+  font-size: 0.95em;
+}
+
+.userStatus {
+  color: #4ECDC4;
+  font-size: 12px;
+}
+
+.noUsersMessage {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 20px;
+  font-style: italic;
+}
+
+.totalUsers {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.onlineIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.onlineDot {
+  width: 8px;
+  height: 8px;
+  background: #4ECDC4;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.onlineLabel {
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.footerText {
+  text-align: center;
+  padding-top: 15px;
+  opacity: 0.7;
+  font-size: 0.9em;
+}
+
+/* Responsive */
 @media (min-width: 320px) and (max-width: 1200px) {
   .textContainer {
     display: none;
   }
+}
+
+@media (max-width: 480px) {
+  .featuresList {
+    grid-template-columns: 1fr;
+  }
+
+  .feature {
+    justify-content: center;
+  }
+}
+
+/* Scrollbar for users list */
+.usersList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.usersList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.usersList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.usersList::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

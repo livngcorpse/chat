@@ -1,0 +1,45 @@
+.typingIndicator {
+  display: flex;
+  justify-content: flex-start;
+  margin: 10px 0;
+  padding-left: 10px;
+}
+
+.typingText {
+  color: #651fff;
+  font-style: italic;
+  font-size: 0.9em;
+  font-weight: 500;
+  animation: pulse 1.5s infinite;
+}
+
+.typingText::after {
+  content: '...';
+  animation: dots 1.5s infinite steps(4, end);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes dots {
+  0%, 20% {
+    content: '.';
+  }
+  40% {
+    content: '..';
+  }
+  60%, 100% {
+    content: '...';
+  }
+}
+
+/* User List in Typing Indicator (for 1-2 users) */
+.typingIndicator.hasUsers .typingText {
+  font-weight: 600;
+}
