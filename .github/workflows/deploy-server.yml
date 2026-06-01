@@ -39,14 +39,22 @@ jobs:
         run: npm run lint || echo "No lint script found"
 
       - name: Deploy to Render
-        uses: render-actions/deploy@v1
-        with:
-          service-id: ${{ secrets.RENDER_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
-          working-directory: ./server
-          environment: production
         env:
-          CI: true
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          COMMIT_SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          echo "Triggering deployment to Render..."
+          curl -X POST \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"revision": "main", "env": "production"}' \
+            "https://api.render.com/deploy/${SERVICE_ID}" || {
+              echo "Deployment failed!"
+              exit 1
+            }
+          echo "Deployment triggered successfully!"
 
       - name: Deployment status
         run: |

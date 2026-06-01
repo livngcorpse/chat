@@ -5,7 +5,7 @@ const express = require('express');
 const { Server } = require('socket.io');
 const cors = require('cors');
 
-const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
+const { addUser, removeUser, getUser, getUsersInRoom, getUsers } = require('./users');
 const router = require('./router');
 
 const app = express();
@@ -140,7 +140,9 @@ io.on('connection', (socket) => {
         });
       }
     }
-    callback();
+    if (callback) {
+      callback();
+    }
   });
 
   socket.on('disconnect', () => {
@@ -165,8 +167,59 @@ io.on('connection', (socket) => {
     }
 
     console.log(`Connection closed: ${socket.id}`);
+
+    // Cleanup empty rooms and expired typing indicators
+    cleanupEmptyRooms();
+    cleanupExpiredTypingUsers();
   });
+
+  // Periodic cleanup every 5 minutes
+  setInterval(() => {
+    cleanupEmptyRooms();
+    cleanupExpiredTypingUsers();
+  }, 5 * 60 * 1000);
 });
+
+// Get all rooms with active users
+function getActiveRooms() {
+  const activeRooms = new Set();
+  for (const user of getUsers()) {
+    activeRooms.add(user.room);
+  }
+  return activeRooms;
+}
+
+// Clean up empty rooms from messageHistory and typingUsers
+function cleanupEmptyRooms() {
+  const activeRooms = getActiveRooms();
+
+  // Remove message history for rooms with no users
+  for (const [room, history] of messageHistory.entries()) {
+    if (!activeRooms.has(room)) {
+      messageHistory.delete(room);
+    }
+  }
+
+  // Remove typing indicators for rooms with no users
+  for (const [key, timestamp] of typingUsers.entries()) {
+    const [room, userName] = key.split(':');
+    if (!activeRooms.has(room)) {
+      typingUsers.delete(key);
+    }
+  }
+}
+
+// Clean up expired typing indicators (older than 5 seconds)
+function cleanupExpiredTypingUsers() {
+  const now = Date.now();
+  const timeout = 5000; // 5 seconds
+
+  for (const [key, timestamp] of typingUsers.entries()) {
+    if (now - timestamp > timeout) {
+      typingUsers.delete(key);
+    }
+  }
+}
 
 const PORT = process.env.PORT || 5000;
 
